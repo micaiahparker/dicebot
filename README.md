@@ -1,2 +1,2 @@
 # dicebot
-Discord bot vaguely related to dnd
+Discord bot vaguely related to DnD
