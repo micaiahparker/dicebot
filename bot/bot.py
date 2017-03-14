@@ -28,11 +28,11 @@ async def fix():
     await asyncio.sleep(3)
     await bot.edit_message(msg, msg.content.replace('ben', 'micaiah'))
 
-@bot.command()
+@bot.command(aliases=['reset'])
 async def restart():
     """Restarts the bot"""
     await bot.reply('Restarting...')
-    bot.restart()
+    await bot.restart()
 
 @bot.event
 async def on_ready():

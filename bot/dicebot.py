@@ -22,6 +22,13 @@ class Dicebot(Bot):
             return True
         return False
 
-    def restart(self):
+    async def die(self):
+        await self.logout()
+        self.loop.stop()
+        sys.exit()
+
+    async def restart(self):
+        await self.logout()
+        self.loop.stop()
         os.system('python -m bot')
         sys.exit()
