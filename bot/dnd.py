@@ -15,35 +15,6 @@ class DnD(Cog):
         await self.bot.reply(randint(min, max))
 
     @command()
-    async def role(self, role_name=None):
-        """Lists info about roles"""
-        with db_session:
-            if role_name:
-                await self.bot.reply(Role.get(name=role_name.title()))
-            else:
-                await self.bot.reply(' '.join(role.name for role in Role.select()))
-
-    @command()
-    async def race(self, race_name=None):
-        """Lists info about races"""
-        with db_session:
-            if race_name:
-                await self.bot.reply(Race.get(name=race_name.title()))
-            else:
-                await self.bot.reply(' '.join(race.name for race in race.select()))
-
-    @command()
-    async def make_character(self, race, role, name=None):
-        with db_session:
-            name = name or get_full_name()
-            race, role = Race.get(name=race.title()), Role.get(name=role.title())
-            if race and role:
-                c = Character(race=race, role=role, name=name)
-                await self.bot.reply('Made: {}'.format(c))
-            else:
-                await self.bot.reply(f'Failed to create person with race: {race} and role {role}')
-
-    @command()
     async def chars(self):
         with db_session:
             c = ', '.join(str(char) for char in Character.select())

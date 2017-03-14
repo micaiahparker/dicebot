@@ -3,10 +3,11 @@ from pony.orm import *
 
 db = Database()
 
+sql_debug(True)
 
 class Race(db.Entity):
     id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    name = Required(str, unique=True)
     characters = Set('Character')
 
     def __str__(self):
@@ -14,12 +15,11 @@ class Race(db.Entity):
 
 class Role(db.Entity):
     id = PrimaryKey(int, auto=True)
-    name = Required(str)
+    name = Required(str, unique=True)
     characters = Set('Character')
 
     def __str__(self):
         return self.name
-
 
 class Character(db.Entity):
     id = PrimaryKey(int, auto=True)
@@ -29,7 +29,6 @@ class Character(db.Entity):
 
     def __str__(self):
         return self.name
-
 
 db.bind("sqlite", "dicebag.db", create_db=True)
 db.generate_mapping(create_tables=True)

@@ -25,11 +25,18 @@ class CLI(Cog):
 
     @command()
     async def kill(self, code=''):
+        """RIP"""
         if self.bot.check_code(code):
             await self.bot.reply('goodbye cruel world')
             await self.bot.die()
         else:
             await self.bot.reply('what is ded will nvr die')
+
+    @command()
+    async def print_code(self):
+        """Prints out the code, because sometimes I don't feel like scrolling for it."""
+        print("Current code:", self.bot.get_code())
+        await self.bot.reply('k')
 
 def setup(bot):
     bot.add_cog(CLI(bot))

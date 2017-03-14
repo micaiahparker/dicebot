@@ -1,3 +1,3 @@
-from .dicebag import Race, Role, Character
+from .models import Race, Role, Character
 
 __all__ = ['Race','Role','Character']
