@@ -3,11 +3,13 @@ import sys
 
 from random import randint
 from discord.ext.commands import Bot
+from .config import Config
 
 class Dicebot(Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.code = self.gen_code()
+        self.config = Config()
 
     def get_code(self):
         return self.code

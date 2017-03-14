@@ -3,8 +3,6 @@ from pony.orm import *
 
 db = Database()
 
-sql_debug(True)
-
 class Race(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Required(str, unique=True)

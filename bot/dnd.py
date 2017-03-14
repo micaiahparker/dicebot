@@ -1,37 +1,83 @@
 from random import randint, choice
 
-from discord.ext.commands import command
-from discord import Member
+from discord.ext.commands import command, group
 from names import get_full_name
-from pony.orm import db_session
+from pony.orm import db_session, sql_debug
 
 from .cog import Cog
 from .dicebag import Character, Race, Role
 
-class DnD(Cog):
+class DND(Cog):
     @command()
-    async def rand(self, min: int=1, max: int=20):
-        """Gets a random number."""
-        await self.bot.reply(randint(min, max))
-
-    @command()
-    async def chars(self):
+    async def characters(self):
+        """Lists all of the created characters."""
         with db_session:
-            c = ', '.join(str(char) for char in Character.select())
-            await self.bot.reply(c)
+            characters = ', '.join(str(c) for c in Character.select())
+            await self.bot.reply(characters)
 
-    @command()
-    async def choose(self, *choices):
-        """Pick between some options."""
-        if not choices:
-            await self.bot.reply('I need options bud.')
-        else:
-            await self.bot.reply(choice(choices))
+    @group(pass_context=True)
+    async def make(self, ctx):
+        if not ctx.invoked_subcommand:
+            await self.bot.reply('Make what??!')
 
-    @command()
-    async def name(self, gender=None):
-        """Gets a random fairly normal name. Pick a gender use male/female."""
-        await self.bot.reply(get_full_name(gender=gender))
+    @make.command()
+    async def race(self, name=None):
+        """adds a new race"""
+        if not name:
+            await self.bot.reply("Needs a name")
+            return None
+
+        with db_session:
+            r = Race(name=name.title())
+            await self.bot.reply("Made: {}".format(r))
+
+    @make.command()
+    async def role(self, name=None):
+        """adds a new role, should be class but.. python keyword"""
+        if not name:
+            await self.bot.reply('Needs a name')
+            return None
+
+        with db_session:
+            r = Role(name=name.title())
+            await self.bot.reply('Made: {}'.format(r))
+
+    @make.command()
+    async def character(self, race, role, name=None):
+        """creates a new character"""
+        name = name or get_full_name()
+
+        with db_session:
+            race = Race.get(name=race.title())
+            role = Role.get(name=role.title())
+            if race and role:
+                await self.bot.reply(Character(name=name.title(), race=race, role=role))
+            else:
+                await self.bot.reply("Couldn't make character with race: {} or role: {}".format(race, role))
+
+
+    @group(pass_context=True)
+    async def ls(self, ctx):
+        """Lists stuff"""
+        if not ctx.invoked_subcommand:
+            await self.bot.reply('list what??')
+
+    @ls.command()
+    async def races(self):
+        with db_session:
+            await self.bot.reply(', '.join(str(r) for r in Race.select()))
+
+    @ls.command()
+    async def roles(self):
+        with db_session:
+            await self.bot.reply(', '.join(str(r) for r in Role.select()))
+
+    @ls.command()
+    async def characters(self):
+        with db_session:
+            await self.bot.reply(', '.join(str(c) for c in Character.select()))
+
 
 def setup(bot):
-    bot.add_cog(DnD(bot))
+    sql_debug(bot.config.get_sql_debug())
+    bot.add_cog(DND(bot))

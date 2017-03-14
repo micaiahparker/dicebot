@@ -1,9 +1,6 @@
 from .bot import bot
-from .config import Config
 
-config = Config()
-
-for extension in config.get_extensions():
+for extension in bot.config.get_extensions():
     try:
         bot.load_extension(extension)
         print('Added: {}'.format(extension))
@@ -11,4 +8,4 @@ for extension in config.get_extensions():
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
-bot.run(config.get_key())
+bot.run(bot.config.get_key())
