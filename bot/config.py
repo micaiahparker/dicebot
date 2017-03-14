@@ -3,7 +3,7 @@ import os
 class Config:
     def __init__(self):
         self.BOT_KEY = os.environ.get('BOT_KEY')
-        self.startup_extensions = ['bot.dnd']
+        self.startup_extensions = ['bot.dnd', 'bot.cli', 'bot.cog']
 
     def get_key(self):
         return self.BOT_KEY

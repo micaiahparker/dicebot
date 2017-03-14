@@ -5,10 +5,9 @@ from discord import Member
 
 from names import get_full_name
 
-class DnD:
-    def __init__(self, bot):
-        self.bot = bot
+from .cog import Cog
 
+class DnD(Cog):
     @commands.command()
     async def rand(self, min: int=1, max: int=20):
         """Gets a random number."""
