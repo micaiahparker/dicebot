@@ -22,7 +22,15 @@ class DnD:
     @commands.command()
     async def choose(self, *choices):
         """Pick between some options."""
-        await self.bot.reply(choice(choices))
+        if not choices:
+            await self.bot.reply('I need options bud.')
+        else:
+            await self.bot.reply(choice(choices))
+
+    @commands.command()
+    async def name(self, gender=None):
+        """Gets a random fairly normal name. Pick a gender use male/female."""
+        await self.bot.reply(get_full_name(gender=gender))
 
 def setup(bot):
     bot.add_cog(DnD(bot))

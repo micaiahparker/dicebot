@@ -1,4 +1,6 @@
 import os
+import sys
+import asyncio
 
 from discord.ext.commands import Bot, when_mentioned_or
 from discord.ext.commands import Command
@@ -17,6 +19,13 @@ async def bad():
 async def good():
     """Used to make me feel good"""
     await bot.reply('thx')
+
+@bot.command()
+async def fix():
+    """Hehehe"""
+    msg = await bot.reply("ben is best")
+    await asyncio.sleep(3)
+    await bot.edit_message(msg, msg.content.replace('ben', 'micaiah'))
 
 @bot.command()
 async def restart():
