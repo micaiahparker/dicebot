@@ -1,5 +1,6 @@
 from discord.ext.commands import command
 from names import get_full_name
+from random import randint, choice
 from .cog import Cog
 
 class RNG(Cog):

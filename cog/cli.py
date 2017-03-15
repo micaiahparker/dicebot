@@ -1,6 +1,7 @@
 import subprocess
 from random import randint
 import sys
+import asyncio
 
 from discord.ext.commands import command
 from .cog import Cog
@@ -37,6 +38,12 @@ class CLI(Cog):
         """Prints out the code, because sometimes I don't feel like scrolling for it."""
         print("Current code:", self.bot.get_code())
         await self.bot.reply('k')
+
+    @command()
+    async def remind(self, s:int, message="Remind me!"):
+        """Sets a reminder in seconds"""
+        await asyncio.sleep(int(s))
+        await self.bot.reply("Reminder: {}".format(message))
 
 def setup(bot):
     bot.add_cog(CLI(bot))

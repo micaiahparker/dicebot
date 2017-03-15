@@ -2,12 +2,15 @@ from discord.ext.commands import command, group
 from .cog import Cog
 from random import choice
 
-def get_column(grid):
-    for row in grid:
-        yield [row[i] for i in range(len(row))]
+def get_column(i, grid):
+    return [row[i] for row in grid]
 
-def check_row(self, row):
+def check_row(row):
     return row == "XXX" or row == "OOO"
+
+def get_diags(grid):
+    return ("".join(str(grid[x][y]) for x, y in [(0, 0), (1, 1),(2, 2)]),
+            "".join(str(grid[x][y]) for x, y in [(0, 2), (1, 1),(2, 0)]))
 
 class Board:
     def __init__(self):
@@ -31,11 +34,19 @@ class Board:
 
     def is_won(self):
         for row in self.grid:
+            print("Row", "".join(str(x) for x in row))
             if check_row("".join(str(x) for x in row)):
                 return True
 
-        for col in get_column(self.grid):
-            if check_row("".join(str(x) for x in col)):
+        for i in range(3):
+            for col in get_column(i, self.grid):
+                print("Col", col)
+                if check_row("".join(str(x) for x in col)):
+                    return True
+
+        for row in get_diags(self.grid):
+            print("Diag", "".join(str(x) for x in row))
+            if check_row("".join(str(x) for x in row)):
                 return True
 
         return False
@@ -55,7 +66,11 @@ class TicTacToe(Cog):
     async def tic(self, ctx):
         """plays tic tac toe, neat huh"""
         if not ctx.invoked_subcommand:
-            await self.bot.reply(self.board)
+            pass
+
+    @tic.command(aliases=['board'])
+    async def show(self):
+        await self.bot.say(self.board)
 
     @tic.command(pass_context=True)
     async def start(self, ctx):
@@ -84,22 +99,24 @@ class TicTacToe(Cog):
         try:
             self.board.move(self.i_turn, x, y)
             if self.board.is_draw():
-                await self.bot.reply('Draw!')
+                await self.bot.say('Draw!')
                 self.end_game()
 
             elif self.board.is_won():
-                await self.board.reply(self.board)
-                await self.bot.reply("{} won!".format(self.turn))
+                await self.bot.say(self.board)
+                await self.bot.say("{} won!".format(self.turn))
+                self.end_game()
             else:
                 await self.change_turn()
-        except Exception:
+        except Exception as e:
+            print(e)
             await self.bot.reply('try again')
 
     async def change_turn(self):
             self.i_turn = (self.i_turn + 1) % 2
             self.turn = self.players[self.i_turn]
-            await self.bot.reply('{}\'s turn'.format(self.turn))
-            await self.bot.reply(self.board)
+            await self.bot.say('{}\'s turn'.format(self.turn))
+            await self.bot.say(self.board)
 
     def end_game(self):
         self.board = Board()
