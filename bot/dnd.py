@@ -55,7 +55,6 @@ class DND(Cog):
             else:
                 await self.bot.reply("Couldn't make character with race: {} or role: {}".format(race, role))
 
-
     @group(pass_context=True)
     async def ls(self, ctx):
         """Lists stuff"""
