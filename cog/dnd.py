@@ -39,10 +39,13 @@ class DND(Cog):
             return None
 
         with db_session:
-            r = Role(name=name.title())
-            await self.bot.reply('Made: {}'.format(r))
+            try:
+                role = Role(name=name.title())
+                await self.bot.reply('Made: {}'.format(role))
+            except:
+                await self.bot.reply('Failed to create: {}'.format(name))
 
-    @make.command()
+    @make.command(aliases=['char','chars'])
     async def character(self, race, role, name=None):
         """creates a new character"""
         name = name or get_full_name()
@@ -61,17 +64,17 @@ class DND(Cog):
         if not ctx.invoked_subcommand:
             await self.bot.reply('list what??')
 
-    @ls.command()
+    @ls.command(aliases=['race'])
     async def races(self):
         with db_session:
             await self.bot.reply(', '.join(str(r) for r in Race.select()))
 
-    @ls.command()
+    @ls.command(aliases=['role'])
     async def roles(self):
         with db_session:
             await self.bot.reply(', '.join(str(r) for r in Role.select()))
 
-    @ls.command()
+    @ls.command(aliases=['char','chars'])
     async def characters(self):
         with db_session:
             await self.bot.reply(', '.join(str(c) for c in Character.select()))

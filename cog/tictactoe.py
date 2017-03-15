@@ -34,25 +34,31 @@ class Board:
 
     def is_won(self):
         for row in self.grid:
-            print("Row", "".join(str(x) for x in row))
             if check_row("".join(str(x) for x in row)):
                 return True
 
         for i in range(3):
             for col in get_column(i, self.grid):
-                print("Col", col)
                 if check_row("".join(str(x) for x in col)):
                     return True
 
         for row in get_diags(self.grid):
-            print("Diag", "".join(str(x) for x in row))
             if check_row("".join(str(x) for x in row)):
                 return True
 
         return False
 
+    def convert(self, s):
+        if s == " ":
+            return ":eggplant:"
+        if s == "X":
+            return ":x:"
+        if s == "O":
+            return ":o:"
+        return s
+
     def __str__(self):
-        return "```{board}```".format(board="\n".join(' '.join(col for col in row) for row in self.grid))
+        return "\n".join(''.join(self.convert(col) for col in row) for row in self.grid)
 
 class TicTacToe(Cog):
     def __init__(self, *args, **kwargs):
@@ -109,13 +115,21 @@ class TicTacToe(Cog):
             else:
                 await self.change_turn()
         except Exception as e:
-            print(e)
             await self.bot.reply('try again')
+
+    @tic.command(aliases=['players'])
+    async def get_players(self):
+        await self.bot.reply(', '.join(str(p) for p in self.players))
+
+    @tic.command(aliases=['turn'])
+    async def get_turn(self):
+        await self.bot.reply(self.turn)
+
 
     async def change_turn(self):
             self.i_turn = (self.i_turn + 1) % 2
             self.turn = self.players[self.i_turn]
-            await self.bot.say('{}\'s turn'.format(self.turn))
+            await self.bot.reply('ur turn')
             await self.bot.say(self.board)
 
     def end_game(self):
@@ -123,14 +137,6 @@ class TicTacToe(Cog):
         self.players = []
         self.turn = None
         self.i_turn = 0
-
-    @tic.command()
-    async def get_players(self):
-        await self.bot.reply(', '.join(str(p) for p in self.players))
-
-    @tic.command()
-    async def get_turn(self):
-        await self.bot.reply(self.turn)
 
 def setup(bot):
     bot.add_cog(TicTacToe(bot))
