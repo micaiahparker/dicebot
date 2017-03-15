@@ -25,7 +25,7 @@ class Board:
     def is_draw(self):
         for row in self.grid:
             for col in row:
-                if col == ' '
+                if col == ' ':
                     return False
         return True
 

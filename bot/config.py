@@ -3,7 +3,7 @@ import os
 class Config:
     def __init__(self):
         self.BOT_KEY = os.environ.get('BOT_KEY')
-        self.startup_extensions = ['bot.dnd', 'bot.cli', 'bot.rng', 'bot.tictactoe']
+        self.startup_extensions = ['cog.dnd', 'cog.cli', 'cog.rng', 'cog.tictactoe']
         self.SQL_DEBUG = bool(os.environ.get('SQL_DEBUG', False))
 
     def get_key(self):

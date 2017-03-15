@@ -5,7 +5,7 @@ from names import get_full_name
 from pony.orm import db_session, sql_debug
 
 from .cog import Cog
-from .dicebag import Character, Race, Role
+from dicebag import Character, Race, Role
 
 class DND(Cog):
     @command()
