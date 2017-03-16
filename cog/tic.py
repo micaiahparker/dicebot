@@ -93,7 +93,7 @@ class TicTacToe(Cog):
             await self.bot.reply('Players: {}'.format(', '.join(str(p) for p in self.players)))
             self.i_turn = choice([0, 1])
             self.turn = self.players[self.i_turn]
-            await self.bot.reply("{}'s turn".format(self.turn))
+            await self.say_turn()
         else:
             await self.bot.reply('Either game not started or max players')
 
@@ -119,17 +119,22 @@ class TicTacToe(Cog):
 
     @tic.command(aliases=['players'])
     async def get_players(self):
-        await self.bot.reply(', '.join(str(p) for p in self.players))
+        await self.bot.say(', '.join(str(p) for p in self.players))
 
     @tic.command(aliases=['turn'])
     async def get_turn(self):
-        await self.bot.reply(self.turn)
+        await self.say_turn()
 
+    async def say_turn(self):
+        if self.turn:
+            await self.bot.say("It is {}'s turn".format(self.turn.mention))
+        else:
+            await self.bot.say("No current game")
 
     async def change_turn(self):
             self.i_turn = (self.i_turn + 1) % 2
             self.turn = self.players[self.i_turn]
-            await self.bot.reply('ur turn')
+            await self.say_turn()
             await self.bot.say(self.board)
 
     def end_game(self):
